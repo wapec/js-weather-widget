@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>JS Weather Widget</title>
+  </head>
+  <body>
+    <div class="placeholderText">Your site is here</div>
+    <div class="root">
+      <div class="ui card" id="weatherCard">
+        <div class="content">
+          <img class="right floated mini ui image" id="weatherIcon" />
+          <div class="header" id="locationName"></div>
+          <div class="meta" id="temperature"></div>
+          <div class="meta" id="wind"></div>
+          <div class="description">
+            Data from:
+            <a href="https://fcc-weather-api.glitch.me/" target="_blank"
+              >WeatherAPI</a
+            >
+          </div>
+        </div>
+      </div>
+      <button class="ui icon blue button" id="weatherButton">
+        <i class="cloud icon"></i>
+      </button>
+    </div>
+    <script src="./scripts.js" defer></script>
+  </body>
+</html>
