@@ -1,18 +1,22 @@
 // Config
 const WEATHER_API_URL = "https://fcc-weather-api.glitch.me/api/";
-const GET_IP_API_URL = "http://ip-api.com/json";
+const GET_IP_API_URL = "https://json.geoiplookup.io/api";
 const HIDDEN_CARD_CLASSNAME = "hidden";
 // End
 
 // Handlers
+const toggleClass = (element, className) => {
+  element.classList.contains(className)
+    ? element.classList.remove(className)
+    : element.classList.add(className);
+};
+
 const invokeButtonClickListener = () => {
   const weatherButtonElement = document.getElementById("weatherButton");
   if (weatherButtonElement)
     document.getElementById("weatherButton").addEventListener("click", () => {
       const cardElement = document.getElementById("weatherCard");
-      cardElement.classList.contains(HIDDEN_CARD_CLASSNAME)
-        ? cardElement.classList.remove(HIDDEN_CARD_CLASSNAME)
-        : cardElement.classList.add(HIDDEN_CARD_CLASSNAME);
+      toggleClass(cardElement, HIDDEN_CARD_CLASSNAME);
     });
 };
 
@@ -74,6 +78,10 @@ const getWeatherInfo = async (latitude, longitude) => {
         attribute: "src",
         data: `${weather[0].icon || "#"}`,
       });
+
+      // Display API description info
+      const descriptionElement = document.getElementById("description");
+      toggleClass(descriptionElement, HIDDEN_CARD_CLASSNAME);
     }
   } else {
     appendDataToDOMElement({
@@ -82,28 +90,59 @@ const getWeatherInfo = async (latitude, longitude) => {
     });
   }
 };
-// End
 
-// Root
-const root = () => {
-  invokeButtonClickListener();
-
+// Define location with third party API
+const getLocationFromAPI = () => {
   const success = async (result) => {
-    const { lat, lon } = await result.json();
-    if (lat && lon) {
-      getWeatherInfo(lat, lon);
+    const { latitude, longitude } = await result.json();
+    if (latitude && longitude) {
+      getWeatherInfo(latitude, longitude);
+    }
+    if (result.error) {
+      appendDataToDOMElement({
+        elementId: "locationName",
+        data: "An error has occured. Location is not available",
+      });
     }
   };
   const error = (error) => {
     appendDataToDOMElement({
       elementId: "locationName",
-      data: "An error has occured. Geolocation is not available",
+      data: "An error has occured. Location is not available",
     });
     console.error(error);
   };
 
-  // Define geolocation
   fetch(GET_IP_API_URL).then(success, error);
+};
+
+// Define location with in-browser navigator
+const getLocationFromNavigator = () => {
+  if ("geolocation" in navigator) {
+    const success = (position) => {
+      const { latitude, longitude } = position.coords;
+      if (latitude && longitude) {
+        getWeatherInfo(latitude, longitude);
+      }
+    };
+    const error = () => {
+      getLocationFromAPI();
+    };
+    navigator.geolocation.getCurrentPosition(success, error);
+  } else {
+    appendDataToDOMElement({
+      elementId: "locationName",
+      data: "Geolocation is not available. Allow it in your browser",
+    });
+    console.error(error);
+  }
+};
+// End
+
+// Root
+const root = () => {
+  invokeButtonClickListener();
+  getLocationFromNavigator();
 };
 
 // Invoke

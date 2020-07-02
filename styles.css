@@ -27,6 +27,21 @@ body {
   justify-content: flex-end;
 }
 
-.card.hidden {
+.card {
+  animation: fadeIn 0.5s;
+}
+
+.hidden {
   display: none !important;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
