@@ -1,6 +1,5 @@
 // Config
 const WEATHER_API_URL = "https://fcc-weather-api.glitch.me/api/";
-const GET_IP_API_URL = "https://ipapi.co/json/";
 const HIDDEN_CARD_CLASSNAME = "hidden";
 // End
 
@@ -91,31 +90,6 @@ const getWeatherInfo = async (latitude, longitude) => {
   }
 };
 
-// Define location with third party API
-const getLocationFromAPI = () => {
-  const success = async (result) => {
-    const { latitude, longitude, error } = await result.json();
-    if (latitude && longitude) {
-      getWeatherInfo(latitude, longitude);
-    }
-    if (error) {
-      appendDataToDOMElement({
-        elementId: "locationName",
-        data: "An error has occured. Location is not available",
-      });
-    }
-  };
-  const error = (error) => {
-    appendDataToDOMElement({
-      elementId: "locationName",
-      data: "An error has occured. Location is not available",
-    });
-    console.error(error);
-  };
-
-  fetch(GET_IP_API_URL).then(success, error);
-};
-
 // Define location with in-browser navigator
 const getLocationFromNavigator = () => {
   if ("geolocation" in navigator) {
@@ -126,15 +100,17 @@ const getLocationFromNavigator = () => {
       }
     };
     const error = () => {
-      getLocationFromAPI();
+      appendDataToDOMElement({
+        elementId: "locationName",
+        data: "An error has occured. Location is not available",
+      });
     };
     navigator.geolocation.getCurrentPosition(success, error);
   } else {
     appendDataToDOMElement({
       elementId: "locationName",
-      data: "Geolocation is not available. Allow it in your browser",
+      data: "Geolocation is not available. Please allow it in your browser",
     });
-    console.error(error);
   }
 };
 // End
