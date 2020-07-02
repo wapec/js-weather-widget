@@ -1,6 +1,6 @@
 // Config
 const WEATHER_API_URL = "https://fcc-weather-api.glitch.me/api/";
-const GET_IP_API_URL = "https://json.geoiplookup.io/api";
+const GET_IP_API_URL = "https://ipapi.co/json/";
 const HIDDEN_CARD_CLASSNAME = "hidden";
 // End
 
@@ -94,11 +94,11 @@ const getWeatherInfo = async (latitude, longitude) => {
 // Define location with third party API
 const getLocationFromAPI = () => {
   const success = async (result) => {
-    const { latitude, longitude } = await result.json();
+    const { latitude, longitude, error } = await result.json();
     if (latitude && longitude) {
       getWeatherInfo(latitude, longitude);
     }
-    if (result.error) {
+    if (error) {
       appendDataToDOMElement({
         elementId: "locationName",
         data: "An error has occured. Location is not available",
