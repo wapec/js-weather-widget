@@ -1,6 +1,4 @@
 (function () {
-  "use strict";
-
   // Config
   const WEATHER_API_URL = "https://fcc-weather-api.glitch.me/api/";
   const HIDDEN_CARD_CLASSNAME = "hidden";
